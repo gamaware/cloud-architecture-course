@@ -530,9 +530,9 @@ terraform plan
 
 Review the output:
 
-- Resources to be created (green `+`)
-- Resources to be modified (yellow `~`)
-- Resources to be destroyed (red `-`)
+- Resources Terraform will create (green `+`)
+- Resources Terraform will modify (yellow `~`)
+- Resources Terraform will destroy (red `-`)
 
 ### Step 7: Apply Configuration
 
@@ -728,7 +728,7 @@ Try implementing this with both CloudFormation and Terraform to compare the expe
 
 ## Cleanup
 
-Ensure all resources are deleted:
+Delete all resources you created:
 
 ### CloudFormation
 
@@ -743,7 +743,7 @@ cd terraform-lab
 terraform destroy
 ```
 
-Verify in AWS Console that all resources are removed.
+Open the AWS Console and verify that no lab resources remain.
 
 ---
 
@@ -799,7 +799,7 @@ Verify in AWS Console that all resources are removed.
 ### Terraform Issues
 
 **Issue**: "Error: configuring Terraform AWS Provider"
-**Solution**: Verify AWS credentials are configured correctly. Check `~/.aws/credentials`.
+**Solution**: Verify that your AWS credentials are correct. Check `~/.aws/credentials`.
 
 **Issue**: "Error acquiring the state lock"
 **Solution**: Another Terraform process is running. Wait or force-unlock (use carefully):

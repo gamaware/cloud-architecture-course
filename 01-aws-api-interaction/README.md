@@ -41,7 +41,7 @@ resource management.
 
 ## Lab Structure
 
-This lab is divided into 3 tasks, each exploring a different method of AWS API interaction.
+This lab covers 3 tasks, each exploring a different method of AWS API interaction.
 
 ### Tasks
 
@@ -77,8 +77,8 @@ This lab is divided into 3 tasks, each exploring a different method of AWS API i
 2. Progress to **Task 2** to learn command-line automation
 3. Complete **Task 3** to master programmatic control
 
-Each task is self-contained and can be completed independently, but following the order is recommended for best
-learning experience.
+Each task is self-contained and you can complete them independently, but we recommend following the order for
+the best learning experience.
 
 ## Key Takeaways
 
@@ -101,7 +101,7 @@ learning experience.
 
 ### Issue: "Bucket name already exists"
 
-**Solution**: Bucket names must be globally unique. Add more unique identifiers to your bucket name.
+**Solution**: Bucket names must be globally unique. Add extra identifiers to your bucket name.
 
 ### Issue: "Access Denied" errors
 
@@ -110,7 +110,7 @@ hours - refresh them from AWS Details.
 
 ### Issue: AWS CLI not found
 
-**Solution**: Ensure AWS CLI is installed and in your PATH. Restart your terminal after installation.
+**Solution**: Confirm that you have AWS CLI in your PATH. Restart your terminal after installation.
 
 ### Issue: Boto3 import error
 

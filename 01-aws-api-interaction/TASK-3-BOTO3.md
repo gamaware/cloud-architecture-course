@@ -12,7 +12,7 @@ and application integration.
 
 ### macOS
 
-Python 3 is usually pre-installed. Verify:
+Python 3 comes pre-installed on most macOS versions. Verify:
 
 ```bash
 python3 --version
@@ -118,7 +118,7 @@ $env:AWS_SESSION_TOKEN="..."
 $env:AWS_DEFAULT_REGION="us-east-1"
 ```
 
-Alternatively, ensure your `~/.aws/credentials` file is configured (from Task 2).
+Alternatively, confirm that your `~/.aws/credentials` file has valid credentials (from Task 2).
 
 ## Step 4: Use the Python Script
 
@@ -205,7 +205,7 @@ Objects in bucket 'an-2026-boto3-jag':
 
 1. Go to AWS Console → S3
 2. Find your bucket `an-2026-boto3-[your-initials]`
-3. Verify the file was uploaded
+3. Verify that the file upload succeeded
 4. Check Properties tab for versioning and encryption
 
 ## Understanding the Script
@@ -279,7 +279,7 @@ Encryption: AES256
 | --- | --- | --- |
 | **Ease of Use** | ⭐⭐ | Requires programming knowledge |
 | **Automation** | ⭐⭐⭐⭐⭐ | Full programmatic control |
-| **Speed** | ⭐⭐⭐⭐ | Fast once code is written |
+| **Speed** | ⭐⭐⭐⭐ | Fast once you write the code |
 | **Flexibility** | ⭐⭐⭐⭐⭐ | Complete control, custom logic |
 | **Learning Curve** | High | Need Python and AWS knowledge |
 | **Best For** | Applications | Complex automation, integration |

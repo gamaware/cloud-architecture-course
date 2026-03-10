@@ -1,3 +1,6 @@
+# Vale styles (downloaded via vale sync)
+styles/
+
 # General
 .DS_Store
 .AppleDouble

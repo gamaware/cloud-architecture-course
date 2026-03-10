@@ -43,8 +43,7 @@ step in the lab meaningful.
 
 ### 1.1 AWS Service Scope Types
 
-Not all AWS services are created equal in terms of geographic scope. AWS services fall into three categories
-based on where they live.
+AWS services differ in geographic scope. They fall into three categories based on where they live.
 
 ```mermaid
 graph LR
@@ -72,7 +71,7 @@ graph LR
 | Scope | Examples | VPC Endpoint? | Reason |
 | --- | --- | --- | --- |
 | **Global** | IAM, Route 53, CloudFront, Organizations | No | These services have no regional VPC context |
-| **Regional** | S3, SQS, SNS, Lambda, DynamoDB, EC2 API | Yes | These live within a region and can be reached via a VPC endpoint |
+| **Regional** | S3, SQS, SNS, Lambda, DynamoDB, EC2 API | Yes | These live within a region and you can reach them via a VPC endpoint |
 | **Zonal** | EC2 instances, EBS volumes, RDS, ElastiCache | N/A | These already run inside your VPC or AZ — they are the resources, not endpoints to them |
 
 > **Why does this matter?** You can only create VPC endpoints for regional services. If a student asks
@@ -83,7 +82,7 @@ graph LR
 
 ### 1.2 VPC Endpoint Types
 
-There are three types of VPC endpoints. This lab covers the first two in depth.
+VPC endpoints come in three types. This lab covers the first two in depth.
 
 ---
 
@@ -108,7 +107,7 @@ graph TD
 - **Services covered**: Amazon S3 and Amazon DynamoDB **only**
 - **Cost**: Free — no hourly charge, no data processing fee
 - **Mechanism**: Adds a route to your route table pointing to a managed prefix list. No Elastic Network
-  Interface (ENI) is created.
+  Interface (ENI).
 - **DNS behavior**: **DNS does NOT change.** `s3.amazonaws.com` still resolves to a public IP. The route table
   silently redirects that traffic through the endpoint instead of the internet gateway.
 - **On-premises access**: Not supported — Gateway endpoints only work from within the VPC
@@ -135,11 +134,11 @@ graph TD
 - **Services covered**: 150+ AWS services — SQS, SNS, SSM, EC2 API, ECR, Secrets Manager, and more
 - **Cost**: ~$0.01/hour per AZ + ~$0.01/GB of data processed
 - **Mechanism**: Creates an **Elastic Network Interface (ENI)** with a private IP address inside your subnet
-- **DNS behavior**: **DNS DOES change.** When Private DNS is enabled, `sqs.us-east-1.amazonaws.com` resolves
+- **DNS behavior**: **DNS DOES change.** When you enable Private DNS, `sqs.us-east-1.amazonaws.com` resolves
   to the private IP of the ENI instead of the public IP. This is the clearest observable difference from
   Gateway endpoints.
 - **On-premises access**: Supported — accessible over AWS Direct Connect or VPN
-- **Key insight**: The same DNS name your application uses is preserved. AWS just changes what IP that name resolves to.
+- **Key insight**: Your application keeps using the same DNS name. AWS just changes what IP that name resolves to.
 
 ---
 
@@ -255,11 +254,11 @@ You will build the network foundation manually (not with a wizard) so you unders
    - **Tenancy**: Default
 5. Click **Create VPC**
 
-> After creation, verify that **DNS hostnames** and **DNS resolution** are enabled — these are required
-> for Interface endpoint Private DNS to work.
+> After creation, verify that you have enabled **DNS hostnames** and **DNS resolution** — Interface
+> endpoint Private DNS requires both to work.
 >
 > - Select `lab03-vpc` → click **Actions** → **Edit VPC settings**
-> - Ensure both **Enable DNS hostnames** and **Enable DNS resolution** are checked
+> - Confirm that both **Enable DNS hostnames** and **Enable DNS resolution** have check marks
 > - Save if you changed anything
 
 ---
@@ -396,7 +395,7 @@ profile is working. Your script will use these credentials automatically.
 
 ### Step 5: Download the Lab Scripts
 
-There are three scripts for this lab — one per test type:
+This lab uses three scripts — one per test type:
 
 | Script | Test | When to run |
 | --- | --- | --- |
@@ -509,8 +508,8 @@ pl-63a5400a          vpce-xxxxxxxxxxxxxxxxx    <--- ADDED BY GATEWAY ENDPOINT
 The destination `pl-63a5400a` is an **AWS-managed prefix list** — a dynamically maintained list of all IP
 ranges used by Amazon S3 in us-east-1. You do not have to maintain this list manually; AWS keeps it updated.
 
-When your EC2 sends traffic to any IP in that prefix list, it is redirected to the VPC endpoint instead of
-the internet gateway.
+When your EC2 sends traffic to any IP in that prefix list, the route table redirects it to the VPC endpoint
+instead of the internet gateway.
 
 > This is the fundamental mechanism of Gateway endpoints: **no DNS change, just a routing change.**
 
@@ -541,7 +540,7 @@ This surprises many students. The endpoint is working, but DNS has not changed. 
 - Traffic reaches S3 via the AWS backbone, never touching the internet
 
 **The routing table intercepts the traffic before it leaves the VPC.** DNS resolves to a public IP, but that
-IP is never actually reached over the internet — it is caught by the route table entry.
+IP is never actually reached over the internet — the route table entry catches it first.
 
 ---
 
@@ -667,7 +666,7 @@ The Interface endpoint ENI needs its own security group to control who can reach
 3. Under **Subnets**, expand `us-east-1a` and check `lab03-public-subnet`
 4. Under **Security groups**: remove the default VPC security group and add `lab03-endpoint-sg`
 5. Under **Policy**: Full access
-6. **Enable DNS name**: make sure this is **checked** — this is what changes DNS resolution
+6. **Enable DNS name**: check this box — this setting changes DNS resolution
 7. Click **Create endpoint**
 
 Wait for the endpoint status to reach **Available** (~1–2 minutes).
@@ -706,7 +705,7 @@ at all.
 
 Go to **Route tables** → `lab03-public-rt` → **Routes** tab.
 
-You will see the same three routes as after Task 3 — **no new route was added** for SQS.
+You will see the same three routes as after Task 3 — **the endpoint did not add a new route** for SQS.
 
 Interface endpoints do not use route tables. They use DNS. This is a key distinction:
 
@@ -789,7 +788,7 @@ Note the SQS latency values and compare with your baseline numbers from Task 2.
 
 **On latency:**
 The difference between internet path and VPC endpoint path within the same AWS region is typically small
-(1-5ms). This is expected — AWS's internal network and public endpoints are both fast when you are already
+(1-5ms). Expect this — AWS's internal network and public endpoints are both fast when you are already
 inside an AWS region. The latency benefit becomes significant when:
 
 - You are routing large volumes of data (reduced jitter and variance)
@@ -839,7 +838,7 @@ Delete resources in this exact order to avoid dependency errors.
 
 ### Step 3: Delete Security Groups
 
-Wait for the EC2 to terminate before deleting its security group (ENI must be released first).
+Wait for the EC2 to terminate before deleting its security group (AWS must release the ENI first).
 
 1. VPC console → **Security groups**
 2. Delete `lab03-endpoint-sg`
@@ -855,7 +854,7 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
 1. VPC console → **Route tables**
 2. Select `lab03-public-rt` → **Actions** → **Delete route table** → confirm
 
-> If deletion fails, check that the subnet association was removed when the subnet was deleted.
+> If deletion fails, verify that deleting the subnet also removed the subnet association.
 
 ### Step 6: Detach and Delete Internet Gateway
 
@@ -868,7 +867,7 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
 1. VPC console → **Your VPCs**
 2. Select `lab03-vpc` → **Actions** → **Delete VPC** → confirm
 
-> Verify all resources have been removed. You can use Resource Groups & Tag Editor to search for any remaining lab resources.
+> Verify that no lab resources remain. You can use Resource Groups & Tag Editor to search for leftover resources.
 
 ---
 
@@ -883,11 +882,11 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
    through the AWS backbone.
 
 3. **Interface endpoints change DNS, not routing** — PrivateLink endpoints override DNS resolution to
-   return a private IP. The same hostname your application uses now points to an ENI in your VPC. No
-   route table changes are made.
+   return a private IP. The same hostname your application uses now points to an ENI in your VPC. The
+   route table stays unchanged.
 
 4. **Latency is not the primary benefit** — Within the same region, latency differences are small. The
-   real benefits are cost reduction, security, and compliance.
+   real wins: cost reduction, security, and compliance.
 
 5. **Endpoints remove the internet dependency** — Once you have a Gateway endpoint for S3, your EC2
    instances do not need the internet gateway to reach S3. The connectivity test in this lab proved
@@ -897,8 +896,8 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
    endpoints create an ENI that must have a security group permitting inbound HTTPS (443) from your
    VPC CIDR.
 
-7. **Private DNS must be enabled on the VPC** — For Interface endpoint DNS override to work, your VPC
-   must have DNS hostnames and DNS resolution enabled. These are on by default but worth verifying.
+7. **You must enable Private DNS on the VPC** — For Interface endpoint DNS override to work, your VPC
+   needs DNS hostnames and DNS resolution turned on. AWS enables both by default, but verify them.
 
 ---
 
@@ -930,11 +929,11 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
 
 ### nslookup still returns public IP after creating SQS Interface endpoint
 
-**Cause**: Usually one of:
+**Cause**: One of the following:
 
 - The endpoint status is not yet **Available** (wait 1–2 more minutes)
 - **Enable DNS name** was not checked when creating the endpoint
-- **DNS hostnames** or **DNS resolution** is disabled on the VPC
+- The VPC has **DNS hostnames** or **DNS resolution** turned off
 
 **Solution**:
 
@@ -944,7 +943,7 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
 
 ---
 
-### Python script shows very high latency (>500ms) or timeouts
+### Python script shows high latency (>500ms) or timeouts
 
 **Cause**: The security group on the Interface endpoint is not allowing the EC2 to reach the ENI.
 
@@ -957,7 +956,7 @@ Wait for the EC2 to terminate before deleting its security group (ENI must be re
 
 ### Route table entry for S3 prefix list is not appearing
 
-**Cause**: Wrong route table was selected during endpoint creation.
+**Cause**: You selected the wrong route table during endpoint creation.
 
 **Solution**:
 

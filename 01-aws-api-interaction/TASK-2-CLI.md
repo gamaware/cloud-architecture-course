@@ -50,7 +50,7 @@ aws --version
 
 ### Understanding AWS Credentials
 
-AWS uses credentials to authenticate your API requests. There are two main methods:
+AWS uses credentials to authenticate your API requests. Two main methods exist:
 
 #### Method A: Environment Variables (Temporary - Recommended for Learner Lab)
 
@@ -94,12 +94,12 @@ $env:AWS_DEFAULT_REGION="us-east-1"
 
 **Characteristics:**
 
-- ✅ Environment variables are cleared when the terminal closes
+- ✅ The terminal clears environment variables when it closes
 - ✅ STS tokens expire by their AWS-issued timestamp (15 min to 12 hours)
 - ✅ Secure (no files to manage)
 - ✅ Easy to refresh
 - ❌ Must re-export for each new terminal
-- ❌ Environment variables are lost when the terminal closes
+- ❌ The terminal discards environment variables when it closes
 
 #### Method B: Credentials File (Persistent)
 

@@ -6,7 +6,10 @@
 
 ## Overview
 
-This hands-on lab teaches AWS API interaction fundamentals through three different methods: AWS Management Console (GUI), AWS CLI, and Python Boto3 SDK. Students will learn how to create and manage S3 buckets using each approach, understanding the strengths and use cases for each method. This lab provides the foundation for programmatic cloud resource management.
+This hands-on lab teaches AWS API interaction fundamentals through three different methods: AWS Management Console
+(GUI), AWS CLI, and Python Boto3 SDK. Students will learn how to create and manage S3 buckets using each approach,
+understanding the strengths and use cases for each method. This lab provides the foundation for programmatic cloud
+resource management.
 
 ## Learning Objectives
 
@@ -29,6 +32,7 @@ This hands-on lab teaches AWS API interaction fundamentals through three differe
 ## What is AWS API?
 
 **AWS API (Application Programming Interface)** provides programmatic access to AWS services:
+
 - RESTful API endpoints for all AWS services
 - Multiple ways to interact: Console, CLI, SDKs
 - Consistent authentication using AWS credentials
@@ -59,7 +63,7 @@ This lab is divided into 3 tasks, each exploring a different method of AWS API i
 ## Comparison of Methods
 
 | Aspect | Console (GUI) | AWS CLI | Boto3 (Python) |
-|--------|---------------|---------|----------------|
+| --- | --- | --- | --- |
 | **Ease of Use** | ⭐⭐⭐⭐⭐ | ⭐⭐⭐ | ⭐⭐ |
 | **Automation** | ⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐⭐ |
 | **Speed** | ⭐⭐ | ⭐⭐⭐⭐ | ⭐⭐⭐⭐ |
@@ -73,7 +77,8 @@ This lab is divided into 3 tasks, each exploring a different method of AWS API i
 2. Progress to **Task 2** to learn command-line automation
 3. Complete **Task 3** to master programmatic control
 
-Each task is self-contained and can be completed independently, but following the order is recommended for best learning experience.
+Each task is self-contained and can be completed independently, but following the order is recommended for best
+learning experience.
 
 ## Key Takeaways
 
@@ -95,26 +100,34 @@ Each task is self-contained and can be completed independently, but following th
 ## Troubleshooting
 
 ### Issue: "Bucket name already exists"
+
 **Solution**: Bucket names must be globally unique. Add more unique identifiers to your bucket name.
 
 ### Issue: "Access Denied" errors
-**Solution**: Verify your AWS credentials are correctly configured. In Learner Lab, credentials expire after a few hours - refresh them from AWS Details.
+
+**Solution**: Verify your AWS credentials are correctly configured. In Learner Lab, credentials expire after a few
+hours - refresh them from AWS Details.
 
 ### Issue: AWS CLI not found
+
 **Solution**: Ensure AWS CLI is installed and in your PATH. Restart your terminal after installation.
 
 ### Issue: Boto3 import error
+
 **Solution**: Ensure you've activated your virtual environment and installed boto3: `pip install boto3`
 
 ### Issue: Environment variables not working
+
 **Solution**: Verify you've exported them in the current terminal session. They don't persist across terminal restarts.
 
 ## Next Steps
 
 After completing this lab, you should:
+
 1. Understand the three main methods of AWS API interaction
 2. Be comfortable creating and managing S3 buckets
 3. Know when to use each method
 4. Be ready for Lab 02: Infrastructure as Code
 
-Continue to **[Lab 02: Infrastructure as Code](../02%20Infrastructure%20as%20Code%20Lab)** to learn about CloudFormation and Terraform!
+Continue to **[Lab 02: Infrastructure as Code](../02%20Infrastructure%20as%20Code%20Lab)** to learn about CloudFormation
+and Terraform!

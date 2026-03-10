@@ -6,7 +6,10 @@
 
 ## Overview
 
-This hands-on lab teaches Infrastructure as Code (IaC) fundamentals using AWS CloudFormation and Terraform. Students will learn to define, deploy, and manage cloud infrastructure using declarative configuration files. This lab demonstrates how IaC enables version control, repeatability, and automation of infrastructure provisioning.
+This hands-on lab teaches Infrastructure as Code (IaC) fundamentals using AWS CloudFormation and Terraform.
+Students will learn to define, deploy, and manage cloud infrastructure using declarative configuration files.
+This lab demonstrates how IaC enables version control, repeatability, and automation of infrastructure
+provisioning.
 
 ## Learning Objectives
 
@@ -31,6 +34,7 @@ This hands-on lab teaches Infrastructure as Code (IaC) fundamentals using AWS Cl
 ## What is Infrastructure as Code?
 
 **Infrastructure as Code (IaC)** is the practice of managing infrastructure through code rather than manual processes:
+
 - Define infrastructure in configuration files
 - Version control your infrastructure
 - Automate provisioning and updates
@@ -47,6 +51,7 @@ CloudFormation is AWS's native IaC service that uses templates to provision and 
 ### Step 1: Understanding CloudFormation
 
 **Key Concepts:**
+
 - **Template**: JSON or YAML file defining resources
 - **Stack**: Collection of AWS resources managed as a single unit
 - **Resource**: AWS service component (e.g., S3 bucket, EC2 instance)
@@ -56,6 +61,7 @@ CloudFormation is AWS's native IaC service that uses templates to provision and 
 ### Step 2: Create CloudFormation Template
 
 Create a directory for your CloudFormation files:
+
 ```bash
 mkdir cloudformation-lab
 cd cloudformation-lab
@@ -104,13 +110,13 @@ Outputs:
     Value: !Ref MyS3Bucket
     Export:
       Name: !Sub '${AWS::StackName}-BucketName'
-  
+
   BucketARN:
     Description: 'ARN of the S3 bucket'
     Value: !GetAtt MyS3Bucket.Arn
     Export:
       Name: !Sub '${AWS::StackName}-BucketARN'
-  
+
   BucketDomainName:
     Description: 'Domain name of the S3 bucket'
     Value: !GetAtt MyS3Bucket.DomainName
@@ -231,13 +237,13 @@ Outputs:
     Value: !Ref MyS3Bucket
     Export:
       Name: !Sub '${AWS::StackName}-BucketName'
-  
+
   BucketARN:
     Description: 'ARN of the S3 bucket'
     Value: !GetAtt MyS3Bucket.Arn
     Export:
       Name: !Sub '${AWS::StackName}-BucketARN'
-  
+
   BucketDomainName:
     Description: 'Domain name of the S3 bucket'
     Value: !GetAtt MyS3Bucket.DomainName
@@ -283,6 +289,7 @@ aws cloudformation describe-stacks --stack-name s3-bucket-stack
 **Method**: AWS CloudFormation
 
 **Key Features:**
+
 - Native AWS service (no additional tools)
 - YAML or JSON templates
 - Automatic rollback on errors
@@ -291,6 +298,7 @@ aws cloudformation describe-stacks --stack-name s3-bucket-stack
 - Drift detection
 
 **Advantages:**
+
 - Deep AWS integration
 - No cost (only for resources)
 - Automatic dependency resolution
@@ -298,6 +306,7 @@ aws cloudformation describe-stacks --stack-name s3-bucket-stack
 - AWS support
 
 **Disadvantages:**
+
 - AWS-only (vendor lock-in)
 - Verbose syntax
 - Limited to AWS services
@@ -312,22 +321,27 @@ Terraform is a cloud-agnostic IaC tool that supports multiple cloud providers us
 ### Step 1: Install Terraform
 
 **macOS:**
+
 ```bash
 brew tap hashicorp/tap
 brew install hashicorp/tap/terraform
 ```
 
 **Windows:**
-Download from: https://www.terraform.io/downloads
+Download from: <https://www.terraform.io/downloads>
 
 **Linux:**
+
 ```bash
 wget -O- https://apt.releases.hashicorp.com/gpg | sudo gpg --dearmor -o /usr/share/keyrings/hashicorp-archive-keyring.gpg
-echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] https://apt.releases.hashicorp.com $(lsb_release -cs) main" | sudo tee /etc/apt/sources.list.d/hashicorp.list
+echo "deb [signed-by=/usr/share/keyrings/hashicorp-archive-keyring.gpg] \
+    https://apt.releases.hashicorp.com $(lsb_release -cs) main" | \
+    sudo tee /etc/apt/sources.list.d/hashicorp.list
 sudo apt update && sudo apt install terraform
 ```
 
 Verify installation:
+
 ```bash
 terraform version
 ```
@@ -335,6 +349,7 @@ terraform version
 ### Step 2: Understanding Terraform
 
 **Key Concepts:**
+
 - **Configuration**: HCL files defining infrastructure
 - **Provider**: Plugin for cloud platform (AWS, Azure, GCP)
 - **Resource**: Infrastructure component
@@ -345,6 +360,7 @@ terraform version
 ### Step 3: Create Terraform Configuration
 
 Create a directory for Terraform files:
+
 ```bash
 mkdir terraform-lab
 cd terraform-lab
@@ -356,7 +372,7 @@ Create `main.tf`:
 # Configure Terraform
 terraform {
   required_version = ">= 1.0"
-  
+
   required_providers {
     aws = {
       source  = "hashicorp/aws"
@@ -373,7 +389,7 @@ provider "aws" {
 # Create S3 Bucket
 resource "aws_s3_bucket" "main" {
   bucket = "an-2026-tf-${var.bucket_suffix}"
-  
+
   tags = {
     Name        = "an-2026-tf-${var.bucket_suffix}"
     Environment = "Lab"
@@ -384,7 +400,7 @@ resource "aws_s3_bucket" "main" {
 # Enable Versioning
 resource "aws_s3_bucket_versioning" "main" {
   bucket = aws_s3_bucket.main.id
-  
+
   versioning_configuration {
     status = "Enabled"
   }
@@ -393,7 +409,7 @@ resource "aws_s3_bucket_versioning" "main" {
 # Enable Encryption
 resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
   bucket = aws_s3_bucket.main.id
-  
+
   rule {
     apply_server_side_encryption_by_default {
       sse_algorithm = "AES256"
@@ -404,7 +420,7 @@ resource "aws_s3_bucket_server_side_encryption_configuration" "main" {
 # Block Public Access
 resource "aws_s3_bucket_public_access_block" "main" {
   bucket = aws_s3_bucket.main.id
-  
+
   block_public_acls       = true
   block_public_policy     = true
   ignore_public_acls      = true
@@ -414,11 +430,11 @@ resource "aws_s3_bucket_public_access_block" "main" {
 # Lifecycle Policy
 resource "aws_s3_bucket_lifecycle_configuration" "main" {
   bucket = aws_s3_bucket.main.id
-  
+
   rule {
     id     = "delete-old-versions"
     status = "Enabled"
-    
+
     noncurrent_version_expiration {
       noncurrent_days = 30
     }
@@ -438,7 +454,7 @@ variable "aws_region" {
 variable "bucket_suffix" {
   description = "Suffix for bucket name (e.g., your initials)"
   type        = string
-  
+
   validation {
     condition     = can(regex("^[a-z0-9-]+$", var.bucket_suffix))
     error_message = "Bucket suffix must contain only lowercase letters, numbers, and hyphens."
@@ -486,6 +502,7 @@ terraform init
 ```
 
 This creates:
+
 - `.terraform/` directory with provider plugins
 - `.terraform.lock.hcl` file with dependency versions
 
@@ -512,6 +529,7 @@ terraform plan
 ```
 
 Review the output:
+
 - Resources to be created (green `+`)
 - Resources to be modified (yellow `~`)
 - Resources to be destroyed (red `-`)
@@ -527,6 +545,7 @@ terraform apply
 Type `yes` when prompted to confirm.
 
 Terraform will:
+
 1. Create the S3 bucket
 2. Enable versioning
 3. Configure encryption
@@ -571,7 +590,7 @@ Let's add a tag. Update `main.tf`:
 ```hcl
 resource "aws_s3_bucket" "main" {
   bucket = "an-2026-tf-${var.bucket_suffix}"
-  
+
   tags = {
     Name        = "an-2026-tf-${var.bucket_suffix}"
     Environment = "Lab"
@@ -604,6 +623,7 @@ terraform destroy
 Type `yes` to confirm.
 
 Terraform will:
+
 1. Remove lifecycle policy
 2. Remove public access block
 3. Remove encryption configuration
@@ -615,6 +635,7 @@ Terraform will:
 **Method**: Terraform
 
 **Key Features:**
+
 - Cloud-agnostic (AWS, Azure, GCP, etc.)
 - HCL (HashiCorp Configuration Language)
 - State management
@@ -623,6 +644,7 @@ Terraform will:
 - Large provider ecosystem
 
 **Advantages:**
+
 - Multi-cloud support
 - Cleaner, more readable syntax
 - Strong community and modules
@@ -630,6 +652,7 @@ Terraform will:
 - Better state management
 
 **Disadvantages:**
+
 - Requires separate tool installation
 - State file management complexity
 - Learning curve for HCL
@@ -640,7 +663,7 @@ Terraform will:
 ## Comparison: CloudFormation vs Terraform
 
 | Aspect | CloudFormation | Terraform |
-|--------|----------------|-----------|
+| --- | --- | --- |
 | **Provider** | AWS | HashiCorp |
 | **Cloud Support** | AWS only | Multi-cloud |
 | **Language** | YAML/JSON | HCL |
@@ -656,7 +679,7 @@ Terraform will:
 
 ## Best Practices
 
-### General IaC Best Practices:
+### General IaC Best Practices
 
 1. **Version Control**: Store all IaC code in Git
 2. **Modularization**: Break large configurations into reusable modules
@@ -667,7 +690,7 @@ Terraform will:
 7. **State Management**: Secure and backup state files
 8. **Code Review**: Peer review infrastructure changes
 
-### CloudFormation Best Practices:
+### CloudFormation Best Practices
 
 1. Use parameters for reusability
 2. Leverage intrinsic functions (!Ref, !Sub, !GetAtt)
@@ -676,7 +699,7 @@ Terraform will:
 5. Enable termination protection for production
 6. Use change sets to preview updates
 
-### Terraform Best Practices:
+### Terraform Best Practices
 
 1. Use remote state (S3 + DynamoDB)
 2. Organize code with modules
@@ -693,6 +716,7 @@ Terraform will:
 Create a more complex infrastructure with both tools:
 
 **Requirements:**
+
 - S3 bucket for static website hosting
 - CloudFront distribution
 - Route53 DNS record
@@ -706,12 +730,14 @@ Try implementing this with both CloudFormation and Terraform to compare the expe
 
 Ensure all resources are deleted:
 
-### CloudFormation:
+### CloudFormation
+
 ```bash
 aws cloudformation delete-stack --stack-name s3-bucket-stack
 ```
 
-### Terraform:
+### Terraform
+
 ```bash
 cd terraform-lab
 terraform destroy
@@ -736,18 +762,21 @@ Verify in AWS Console that all resources are removed.
 
 ## Additional Resources
 
-### CloudFormation:
+### CloudFormation Resources
+
 - [AWS CloudFormation User Guide](https://docs.aws.amazon.com/cloudformation/)
 - [CloudFormation Template Reference](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/template-reference.html)
 - [CloudFormation Best Practices](https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/best-practices.html)
 
-### Terraform:
+### Terraform Resources
+
 - [Terraform Documentation](https://www.terraform.io/docs)
 - [Terraform AWS Provider](https://registry.terraform.io/providers/hashicorp/aws/latest/docs)
 - [Terraform Best Practices](https://www.terraform-best-practices.com/)
 - [Terraform Registry](https://registry.terraform.io/)
 
-### General IaC:
+### General IaC
+
 - [Infrastructure as Code Book by Kief Morris](https://www.oreilly.com/library/view/infrastructure-as-code/9781098114664/)
 - [AWS Well-Architected Framework](https://aws.amazon.com/architecture/well-architected/)
 
@@ -755,10 +784,11 @@ Verify in AWS Console that all resources are removed.
 
 ## Troubleshooting
 
-### CloudFormation Issues:
+### CloudFormation Issues
 
 **Issue**: Stack creation fails
 **Solution**: Check Events tab for error details. Common issues:
+
 - Bucket name already exists (must be globally unique)
 - Insufficient permissions
 - Invalid template syntax
@@ -766,13 +796,14 @@ Verify in AWS Console that all resources are removed.
 **Issue**: Stack stuck in DELETE_FAILED
 **Solution**: Manually delete resources blocking deletion (e.g., non-empty S3 bucket), then retry.
 
-### Terraform Issues:
+### Terraform Issues
 
 **Issue**: "Error: configuring Terraform AWS Provider"
 **Solution**: Verify AWS credentials are configured correctly. Check `~/.aws/credentials`.
 
 **Issue**: "Error acquiring the state lock"
 **Solution**: Another Terraform process is running. Wait or force-unlock (use carefully):
+
 ```bash
 terraform force-unlock <lock-id>
 ```
@@ -785,6 +816,7 @@ terraform force-unlock <lock-id>
 ## Next Steps
 
 After completing this lab, you should:
+
 1. Understand Infrastructure as Code principles
 2. Be able to write CloudFormation templates
 3. Be comfortable with Terraform configurations

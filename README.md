@@ -14,7 +14,9 @@ Course materials and labs for Cloud Architecture.
 ### 🧪 Labs
 
 #### [01 AWS API Interaction Lab](./01%20AWS%20API%20Interaction%20Lab)
+
 Foundational lab teaching AWS API interaction through multiple methods. Students learn to:
+
 - Navigate the AWS Management Console (GUI)
 - Use AWS CLI for command-line operations
 - Write Python scripts with Boto3 SDK
@@ -27,7 +29,9 @@ Foundational lab teaching AWS API interaction through multiple methods. Students
 **Key Concepts**: AWS API, SDK usage, CLI operations, programmatic access, cloud automation basics
 
 #### [02 Infrastructure as Code Lab](./02%20Infrastructure%20as%20Code%20Lab)
+
 Hands-on lab exploring Infrastructure as Code (IaC) with CloudFormation and Terraform. Students learn to:
+
 - Write CloudFormation templates in YAML
 - Deploy and manage CloudFormation stacks
 - Create Terraform configurations
@@ -39,10 +43,27 @@ Hands-on lab exploring Infrastructure as Code (IaC) with CloudFormation and Terr
 
 **Key Concepts**: Infrastructure as Code, declarative configuration, state management, resource provisioning, IaC best practices
 
+#### [03 VPC Endpoints Lab](./03%20VPC%20Endpoints%20Lab)
+
+Hands-on lab exploring VPC Endpoints and private AWS service connectivity. Students learn to:
+
+- Understand the three AWS service scope types: Global, Regional, and Zonal
+- Distinguish between Gateway, Interface (PrivateLink), and Gateway Load Balancer endpoints
+- Create an S3 Gateway endpoint and observe route table changes
+- Create an SQS Interface endpoint and observe DNS resolution changes
+- Run DNS resolution tests, latency benchmarks, and route table inspections
+- Understand why traffic routing through the AWS backbone differs from internet routing
+
+**Technologies**: AWS VPC, Amazon S3, Amazon SQS, AWS PrivateLink, Python, Boto3, EC2
+
+**Key Concepts**: VPC endpoints, AWS PrivateLink, private connectivity, DNS resolution, network routing,
+service scope (Global/Regional/Zonal), latency comparison
+
 ### 👨🏫 Instructor
 
-**Mtro. Jorge Alejandro García Martínez**
-- Email: alejandrogarcia@iteso.mx
+#### Mtro. Jorge Alejandro García Martínez
+
+- Email: <alejandrogarcia@iteso.mx>
 - Canvas: [https://iteso.instructure.com/courses/46001](https://iteso.instructure.com/courses/46001)
 
 ### 📅 Schedule

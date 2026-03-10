@@ -4,7 +4,8 @@
 
 ## Overview
 
-The AWS Console provides a visual, user-friendly interface for managing AWS resources. This is the best starting point for learning AWS services.
+The AWS Console provides a visual, user-friendly interface for managing AWS resources. This is the best starting
+point for learning AWS services.
 
 ## Step 1: Access AWS Academy Learner Lab
 
@@ -29,6 +30,7 @@ The AWS Console provides a visual, user-friendly interface for managing AWS reso
 2. Configure the following settings:
 
 **General Configuration:**
+
 - **Bucket name**: `an-2026-console-[your-initials]` (e.g., `an-2026-console-jag`)
   - Must be globally unique across all AWS accounts
   - Use lowercase letters, numbers, and hyphens only
@@ -38,9 +40,11 @@ The AWS Console provides a visual, user-friendly interface for managing AWS reso
 *Enter bucket name, select region, and choose General purpose bucket type*
 
 **Object Ownership:**
+
 - Keep **ACLs disabled (recommended)** selected
 
 **Block Public Access:**
+
 - Keep all checkboxes **CHECKED** (recommended for security)
 - This ensures your bucket remains private
 
@@ -48,18 +52,20 @@ The AWS Console provides a visual, user-friendly interface for managing AWS reso
 *Keep ACLs disabled and Block all public access checked*
 
 **Bucket Versioning:**
+
 - Select **Enable**
 - Allows you to keep multiple versions of objects
 
 **Default Encryption:**
+
 - Select **Enable**
 - Choose **Amazon S3 managed keys (SSE-S3)**
 
 ![Create Bucket - Versioning & Encryption](screenshots/create-bucket-versioning-encryption.gif)
 *Enable Bucket Versioning and configure default encryption with SSE-S3*
 
-3. Click **Create bucket** at the bottom
-4. Verify your bucket appears in the bucket list
+1. Click **Create bucket** at the bottom
+2. Verify your bucket appears in the bucket list
 
 ## Step 4: Upload Test Files
 
@@ -83,8 +89,8 @@ The AWS Console provides a visual, user-friendly interface for managing AWS reso
 ![Bucket Properties](screenshots/bucket-properties.gif)
 *The Properties tab showing bucket overview, versioning, and encryption settings*
 
-3. Click on the **Permissions** tab
-4. Review the Block Public Access settings
+1. Click on the **Permissions** tab
+2. Review the Block Public Access settings
 
 ![Bucket Permissions](screenshots/bucket-permissions.gif)
 *The Permissions tab showing Block Public Access and bucket policy settings*
@@ -94,7 +100,8 @@ The AWS Console provides a visual, user-friendly interface for managing AWS reso
 **Method**: AWS Management Console (GUI)
 
 **Bucket Details:**
-```
+
+```text
 Bucket Name: an-2026-console-[your-initials]
 Region: us-east-1
 Access: Private (public access blocked)
@@ -105,15 +112,16 @@ Encryption: SSE-S3 (Amazon managed)
 ## Comparison
 
 | Aspect | Rating | Notes |
-|--------|--------|-------|
+| --- | --- | --- |
 | **Ease of Use** | ⭐⭐⭐⭐⭐ | Most intuitive, visual feedback |
 | **Automation** | ⭐ | Manual, not repeatable |
 | **Speed** | ⭐⭐ | Slow for repetitive tasks |
 | **Flexibility** | ⭐⭐ | Limited to GUI options |
 | **Learning Curve** | Low | No technical knowledge required |
-| **Best For** | Learning, exploration, one-off tasks |
+| **Best For** | Learning | Exploration, one-off tasks |
 
 **Advantages:**
+
 - User-friendly visual interface
 - No coding required
 - Great for learning and exploration
@@ -121,6 +129,7 @@ Encryption: SSE-S3 (Amazon managed)
 - Easy to discover features
 
 **Disadvantages:**
+
 - Manual and time-consuming for repetitive tasks
 - Not suitable for automation
 - Difficult to version control
@@ -130,6 +139,7 @@ Encryption: SSE-S3 (Amazon managed)
 ## Cleanup
 
 To delete the bucket:
+
 1. Go to S3 console
 2. Select your bucket
 3. Click **Empty** to delete all objects

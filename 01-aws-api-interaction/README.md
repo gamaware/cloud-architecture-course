@@ -129,5 +129,5 @@ After completing this lab, you should:
 3. Know when to use each method
 4. Be ready for Lab 02: Infrastructure as Code
 
-Continue to **[Lab 02: Infrastructure as Code](../02%20Infrastructure%20as%20Code%20Lab)** to learn about CloudFormation
+Continue to **[Lab 02: Infrastructure as Code](../02-infrastructure-as-code)** to learn about CloudFormation
 and Terraform!

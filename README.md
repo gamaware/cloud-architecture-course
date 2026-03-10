@@ -13,7 +13,7 @@ Course materials and labs for Cloud Architecture.
 
 ### 🧪 Labs
 
-#### [01 AWS API Interaction Lab](./01%20AWS%20API%20Interaction%20Lab)
+#### [01 AWS API Interaction](./01-aws-api-interaction)
 
 Foundational lab teaching AWS API interaction through multiple methods. Students learn to:
 
@@ -28,7 +28,7 @@ Foundational lab teaching AWS API interaction through multiple methods. Students
 
 **Key Concepts**: AWS API, SDK usage, CLI operations, programmatic access, cloud automation basics
 
-#### [02 Infrastructure as Code Lab](./02%20Infrastructure%20as%20Code%20Lab)
+#### [02 Infrastructure as Code](./02-infrastructure-as-code)
 
 Hands-on lab exploring Infrastructure as Code (IaC) with CloudFormation and Terraform. Students learn to:
 
@@ -43,7 +43,7 @@ Hands-on lab exploring Infrastructure as Code (IaC) with CloudFormation and Terr
 
 **Key Concepts**: Infrastructure as Code, declarative configuration, state management, resource provisioning, IaC best practices
 
-#### [03 VPC Endpoints Lab](./03%20VPC%20Endpoints%20Lab)
+#### [03 VPC Endpoints](./03-vpc-endpoints)
 
 Hands-on lab exploring VPC Endpoints and private AWS service connectivity. Students learn to:
 
@@ -64,12 +64,6 @@ service scope (Global/Regional/Zonal), latency comparison
 #### Mtro. Jorge Alejandro García Martínez
 
 - Email: <alejandrogarcia@iteso.mx>
-- Canvas: [https://iteso.instructure.com/courses/46001](https://iteso.instructure.com/courses/46001)
-
-### 📅 Schedule
-
-- **Course**: AWS Academy Learner Lab [155046]
-- **Semester**: Spring 2026
 
 ### 👤 Author
 

@@ -91,11 +91,12 @@ $env:AWS_DEFAULT_REGION="us-east-1"
 
 **Characteristics:**
 
-- ✅ Temporary (expires with terminal session)
+- ✅ Environment variables are cleared when the terminal closes
+- ✅ STS tokens expire by their AWS-issued timestamp (15 min to 12 hours)
 - ✅ Secure (no files to manage)
 - ✅ Easy to refresh
 - ❌ Must re-export for each new terminal
-- ❌ Lost when terminal closes
+- ❌ Environment variables are lost when the terminal closes
 
 #### Method B: Credentials File (Persistent)
 
@@ -113,8 +114,10 @@ Create/edit `~/.aws/credentials`:
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY
 aws_secret_access_key = YOUR_SECRET_KEY
-aws_session_token = YOUR_SESSION_TOKEN
 ```
+
+> **Note:** If you are using temporary STS credentials (e.g., from AWS Academy),
+> add `aws_session_token = YOUR_SESSION_TOKEN` to this file as well.
 
 Create/edit `~/.aws/config`:
 
@@ -132,8 +135,10 @@ Create/edit `C:\Users\USERNAME\.aws\credentials`:
 [default]
 aws_access_key_id = YOUR_ACCESS_KEY
 aws_secret_access_key = YOUR_SECRET_KEY
-aws_session_token = YOUR_SESSION_TOKEN
 ```
+
+> **Note:** If you are using temporary STS credentials (e.g., from AWS Academy),
+> add `aws_session_token = YOUR_SESSION_TOKEN` to this file as well.
 
 Create/edit `C:\Users\USERNAME\.aws\config`:
 
@@ -157,7 +162,7 @@ output = json
 | **Persistence** | Terminal session only | Across all sessions |
 | **Security** | More secure (temporary) | Less secure (persistent) |
 | **Use Case** | Learner Lab, temporary access | Long-term AWS accounts |
-| **Expiration** | Automatic (terminal closes) | Manual update needed |
+| **Expiration** | STS timestamp + env vars cleared on terminal close | Manual update needed |
 | **Setup** | Copy-paste each session | One-time setup |
 | **Best For** | AWS Academy, STS tokens | IAM users, production |
 
@@ -184,15 +189,18 @@ aws sts get-caller-identity
 - Confirms your credentials are valid
 - Does not create or modify any resources
 
-Expected output:
+Expected output (Learner Lab with assumed-role credentials):
 
 ```json
 {
-    "UserId": "AIDAI...",
+    "UserId": "AROA...:lab-session",
     "Account": "123456789012",
-    "Arn": "arn:aws:iam::123456789012:user/username"
+    "Arn": "arn:aws:sts::123456789012:assumed-role/LabRole/lab-session"
 }
 ```
+
+> **Note:** If you are using long-lived IAM user credentials instead of
+> Learner Lab, the ARN format is `arn:aws:iam::123456789012:user/username`.
 
 ## Step 3: Create S3 Bucket with CLI
 

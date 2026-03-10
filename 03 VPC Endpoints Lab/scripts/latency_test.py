@@ -15,6 +15,7 @@ Usage:
 import boto3
 import time
 import statistics
+from botocore.exceptions import ClientError, BotoCoreError, NoCredentialsError
 
 REGION = "us-east-1"
 ITERATIONS = 30
@@ -34,7 +35,14 @@ def measure(func, label):
             func()
             samples.append((time.perf_counter() - t0) * 1000)
             print(".", end="", flush=True)
-        except Exception as e:
+        except NoCredentialsError:
+            print("!")
+            print("  ERROR: No AWS credentials found — check instance profile or environment")
+            return None
+        except (ClientError, BotoCoreError):
+            errors += 1
+            print("x", end="", flush=True)
+        except Exception:
             errors += 1
             print("x", end="", flush=True)
 
@@ -94,8 +102,15 @@ def main():
     print(f"  Iterations : {ITERATIONS} per service")
     print(f"\n  Initializing boto3 clients...")
 
-    s3 = boto3.client("s3", region_name=REGION)
-    sqs = boto3.client("sqs", region_name=REGION)
+    try:
+        s3 = boto3.client("s3", region_name=REGION)
+        sqs = boto3.client("sqs", region_name=REGION)
+    except NoCredentialsError:
+        print("  ERROR: No AWS credentials found — check instance profile or environment")
+        return
+    except BotoCoreError as e:
+        print(f"  ERROR: Failed to initialize AWS clients — {e}")
+        return
 
     print("  OK — credentials loaded from instance profile")
 

@@ -16,8 +16,10 @@ Usage:
   python3 connectivity_test.py
 """
 
+import urllib.error
 import urllib.request
 import boto3
+from botocore.exceptions import ClientError, BotoCoreError, NoCredentialsError
 
 REGION = "us-east-1"
 TIMEOUT = 6  # seconds — short enough to fail quickly if internet is down
@@ -30,8 +32,10 @@ def test_internet():
         with urllib.request.urlopen(url, timeout=TIMEOUT) as response:
             public_ip = response.read().decode().strip()
             return True, f"Public IP: {public_ip}"
+    except urllib.error.URLError as e:
+        return False, f"Network error: {e}"
     except Exception as e:
-        return False, str(e)
+        return False, f"Unexpected error: {e}"
 
 
 def test_s3():
@@ -41,8 +45,12 @@ def test_s3():
         response = client.list_buckets()
         bucket_count = len(response.get("Buckets", []))
         return True, f"{bucket_count} bucket(s) listed"
+    except NoCredentialsError:
+        return False, "No AWS credentials found — check instance profile or environment"
+    except (ClientError, BotoCoreError) as e:
+        return False, f"AWS error: {e}"
     except Exception as e:
-        return False, str(e)
+        return False, f"Unexpected error: {e}"
 
 
 def test_sqs():
@@ -52,8 +60,12 @@ def test_sqs():
         response = client.list_queues()
         queue_count = len(response.get("QueueUrls", []))
         return True, f"{queue_count} queue(s) listed"
+    except NoCredentialsError:
+        return False, "No AWS credentials found — check instance profile or environment"
+    except (ClientError, BotoCoreError) as e:
+        return False, f"AWS error: {e}"
     except Exception as e:
-        return False, str(e)
+        return False, f"Unexpected error: {e}"
 
 
 def fmt(success, detail):

@@ -4,7 +4,7 @@ Connectivity Test Script
 Lab 03: VPC Endpoints — Cloud Architecture Course
 
 Run this script AFTER removing the 0.0.0.0/0 → IGW route from the route table.
-It tests three things simultaneously:
+It tests three things:
   1. General internet access  — expected to FAIL without the IGW route
   2. Amazon S3 access         — expected to PASS via the Gateway endpoint
   3. Amazon SQS access        — expected to PASS via the Interface endpoint

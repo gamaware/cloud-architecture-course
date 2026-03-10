@@ -24,7 +24,10 @@ Download and run the installer:
 Or using PowerShell:
 
 ```powershell
-msiexec.exe /i https://awscli.amazonaws.com/AWSCLIV2.msi
+# Download and install AWS CLI
+$installerPath = "$env:TEMP\AWSCLIV2.msi"
+Invoke-WebRequest -Uri https://awscli.amazonaws.com/AWSCLIV2.msi -OutFile $installerPath
+Start-Process msiexec.exe -ArgumentList "/i $installerPath /quiet" -Wait
 ```
 
 ### Linux

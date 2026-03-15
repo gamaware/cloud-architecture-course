@@ -1,10 +1,13 @@
 ---
 name: new-lab
-description: Scaffold a new lab module with the standard directory structure and README template
+description: >-
+  Scaffold a new lab module with the standard 13-section README
+  and directory structure. Use this skill whenever the user wants to
+  create a new lab, add a module, scaffold a lesson, or says something
+  like "create lab 04" or "add a new module for serverless".
 disable-model-invocation: true
 user-invocable: true
 argument-hint: "[NN-topic-name]"
-allowed-tools: Read, Write, Bash, Glob
 ---
 
 # Scaffold a New Lab Module

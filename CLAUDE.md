@@ -81,6 +81,7 @@ All hooks must pass before committing. Install with `pre-commit install`.
 - **Secrets**: detect-secrets (with `.secrets.baseline`), gitleaks.
 - **Markdown**: markdownlint with `--fix`.
 - **Prose**: Vale with write-good (passive voice, weasel words) and proselint (grammar, usage).
+- **Shell**: shellcheck (severity: warning), shellharden.
 - **GitHub Actions**: actionlint, zizmor (security analysis).
 - **Commits**: conventional-pre-commit (commit-msg stage).
 
@@ -88,8 +89,8 @@ All hooks must pass before committing. Install with `pre-commit install`.
 
 Hooks in `.claude/settings.json` automate deterministic actions:
 
-- **Post-edit** (`post-edit.sh`): Auto-runs `markdownlint --fix` on `.md` files
-  after every Edit/Write.
+- **Post-edit** (`post-edit.sh`): Auto-runs `shellharden --replace` on `.sh` files
+  and `markdownlint --fix` on `.md` files after every Edit/Write.
 
 ## Claude Code Skills
 
@@ -109,6 +110,14 @@ Skills in `.claude/skills/` provide reusable workflows:
 - Do not create `.markdownlintignore`, custom rule overrides, or inline disable comments.
 - Markdownlint config: MD013 line length at 120 characters, tables exempt.
   That is the ONLY customization in `.markdownlint.yaml`.
+
+## Shell Scripts
+
+- Must pass shellcheck (severity: warning) and shellharden.
+- Quote all variables. Prefer `"$VAR"` over `"${VAR}"` — only use braces when needed
+  (e.g., `"${VAR}_suffix"`).
+- Use arrays for word splitting.
+- Scripts must have shebangs and executable permissions.
 
 ## Python Scripts
 

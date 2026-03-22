@@ -32,6 +32,20 @@ repos:
         language: system
         pass_filenames: false
 
+  # Shell scripts
+  - repo: local
+    hooks:
+      - id: shellcheck
+        name: shellcheck
+        entry: shellcheck --severity=warning
+        language: system
+        types: [shell]
+      - id: shellharden
+        name: shellharden
+        entry: shellharden --check
+        language: system
+        types: [shell]
+
   - repo: https://github.com/igorshubovych/markdownlint-cli
     rev: v0.47.0
     hooks:

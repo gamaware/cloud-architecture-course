@@ -89,8 +89,9 @@ All hooks must pass before committing. Install with `pre-commit install`.
 
 Hooks in `.claude/settings.json` automate deterministic actions:
 
-- **Post-edit** (`post-edit.sh`): Auto-runs `shellharden --replace` on `.sh` files
-  and `markdownlint --fix` on `.md` files after every Edit/Write.
+- **Post-edit** (`post-edit.sh`): Runs `shellharden --replace` on `.sh` files
+  and `markdownlint --fix` on `.md` files after every Edit/Write (when the tools
+  are installed).
 
 ## Claude Code Skills
 

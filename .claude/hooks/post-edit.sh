@@ -2,7 +2,12 @@
 # Post-edit hook: auto-fix files after edits
 set -euo pipefail
 
-FILE="$TOOL_INPUT_FILE_PATH"
+FILE="${TOOL_INPUT_FILE_PATH:-}"
+
+if [ "$FILE" = "" ]; then
+    # No input file provided; nothing to do.
+    exit 0
+fi
 
 case "$FILE" in
     *.sh)
@@ -10,7 +15,7 @@ case "$FILE" in
             shellharden --replace "$FILE" 2>/dev/null || true
         fi
         if [ -f "$FILE" ] && head -1 "$FILE" | grep -q '^#!'; then
-            chmod +x "$FILE"
+            chmod +x "$FILE" 2>/dev/null || true
         fi
         ;;
     *.md)

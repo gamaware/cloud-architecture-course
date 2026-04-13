@@ -1,0 +1,256 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Description: Mom & Pop Cafe - VPC with Amazon Linux LAMP instance for Lambda lab. Uses pre-existing LabRole and LabInstanceProfile.
+
+Parameters:
+  VPCCIDR:
+    Description: CIDR Block for MomPopCafe VPC
+    Type: String
+    AllowedValues:
+      - 10.200.0.0/20
+    Default: 10.200.0.0/20
+
+  PublicSubnet1Param:
+    Description: Public Subnet 1
+    Type: String
+    AllowedValues:
+      - 10.200.0.0/24
+    Default: 10.200.0.0/24
+
+  PrivateSubnet1Param:
+    Description: Private Subnet 1
+    Type: String
+    AllowedValues:
+      - 10.200.2.0/23
+    Default: 10.200.2.0/23
+
+  KeyName:
+    Description: Keyname for the keypair
+    Type: String
+    Default: vockey
+
+  LatestAmiId:
+    Type: AWS::SSM::Parameter::Value<AWS::EC2::Image::Id>
+    Default: /aws/service/ami-amazon-linux-latest/amzn2-ami-hvm-x86_64-gp2
+
+Resources:
+  VPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: !Ref VPCCIDR
+      EnableDnsHostnames: "true"
+      Tags:
+        - Key: VPC
+          Value: MomPopCafe
+        - Key: Name
+          Value: MomPopCafe VPC
+
+  InternetGateway:
+    Type: AWS::EC2::InternetGateway
+    DependsOn: VPC
+
+  AttachGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    DependsOn:
+      - VPC
+      - InternetGateway
+    Properties:
+      VpcId: !Ref VPC
+      InternetGatewayId: !Ref InternetGateway
+
+  PublicSubnet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: VPC
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PublicSubnet1Param
+      AvailabilityZone: !Select
+        - "0"
+        - !GetAZs
+      MapPublicIpOnLaunch: "true"
+      Tags:
+        - Key: Name
+          Value: MomPopCafe Public Subnet 1
+
+  PublicRouteTable:
+    Type: AWS::EC2::RouteTable
+    DependsOn:
+      - VPC
+      - AttachGateway
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Public Route Table
+
+  PublicRoute:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - VPC
+      - PublicRouteTable
+      - InternetGateway
+      - AttachGateway
+    Properties:
+      RouteTableId: !Ref PublicRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      GatewayId: !Ref InternetGateway
+
+  PublicSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PublicRouteTable
+      - PublicSubnet1
+    Properties:
+      SubnetId: !Ref PublicSubnet1
+      RouteTableId: !Ref PublicRouteTable
+
+  PrivateSubnet1:
+    Type: AWS::EC2::Subnet
+    DependsOn: VPC
+    Properties:
+      VpcId: !Ref VPC
+      CidrBlock: !Ref PrivateSubnet1Param
+      AvailabilityZone: !Select
+        - "0"
+        - !GetAZs
+      Tags:
+        - Key: Name
+          Value: Private Subnet 1
+
+  PrivateRouteTable:
+    Type: AWS::EC2::RouteTable
+    DependsOn:
+      - VPC
+    Properties:
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: Private Route Table 1
+
+  PrivateRoute:
+    Type: AWS::EC2::Route
+    DependsOn:
+      - VPC
+      - PrivateRouteTable
+      - NATGateway
+    Properties:
+      RouteTableId: !Ref PrivateRouteTable
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref NATGateway
+
+  PrivateSubnet1RouteTableAssociation:
+    Type: AWS::EC2::SubnetRouteTableAssociation
+    DependsOn:
+      - PrivateRouteTable
+      - PrivateSubnet1
+    Properties:
+      SubnetId: !Ref PrivateSubnet1
+      RouteTableId: !Ref PrivateRouteTable
+
+  NATGateway:
+    Type: AWS::EC2::NatGateway
+    DependsOn: AttachGateway
+    Properties:
+      AllocationId: !GetAtt EIP.AllocationId
+      SubnetId: !Ref PublicSubnet1
+
+  EIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  MomPopCafeInstance:
+    Type: AWS::EC2::Instance
+    DependsOn:
+      - VPC
+      - MomPopCafeSecurityGroup
+      - PublicSubnet1
+    Properties:
+      ImageId: !Ref LatestAmiId
+      KeyName: !Ref KeyName
+      IamInstanceProfile: LabInstanceProfile
+      InstanceType: t2.micro
+      NetworkInterfaces:
+        - DeviceIndex: "0"
+          AssociatePublicIpAddress: "true"
+          SubnetId: !Ref PublicSubnet1
+          GroupSet:
+            - !Ref MomPopCafeSecurityGroup
+      SourceDestCheck: "false"
+      Tags:
+        - Key: Name
+          Value: MomPopCafeInstance
+      UserData: !Base64
+        Fn::Join:
+          - ""
+          - - "#!/bin/bash -ex \n"
+            - "yum -y update \n"
+            - "amazon-linux-extras install -y lamp-mariadb10.2-php7.2 php7.2 \n"
+            - "yum -y install httpd mariadb-server wget \n"
+            - "systemctl enable httpd \n"
+            - "systemctl start httpd \n"
+            - "systemctl enable mariadb \n"
+            - "systemctl start mariadb \n"
+            - "echo '<html><h1>Hello From Your Web Server!</h1></html>' > /var/www/html/index.html \n"
+            - "find /var/www -type d -exec chmod 2775 {} \\; \n"
+            - "find /var/www -type f -exec chmod 0664 {} \\; \n"
+            - "echo \"<?php phpinfo(); ?>\" > /var/www/html/phpinfo.php \n"
+            - "usermod -a -G apache ec2-user \n"
+            - "chown -R ec2-user:apache /var/www \n"
+            - "chmod 2775 /var/www \n"
+            - "wget  https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/ILT-TF-200-ACSOPS-1-91552/08-activity-5-lambda/s3/momPopSetup.tar.gz \n"
+            - "tar -zxvf momPopSetup.tar.gz \n"
+            - "wget  https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/ILT-TF-200-ACSOPS-1-91552/08-activity-5-lambda/s3/momPopDb.tar.gz \n"
+            - "tar -zxvf momPopDb.tar.gz \n"
+            - "wget  https://aws-tc-largeobjects.s3.us-west-2.amazonaws.com/ILT-TF-200-ACSOPS-1-91552/08-activity-5-lambda/s3/mompopcafe.tar.gz \n"
+            - "tar -zxvf mompopcafe.tar.gz -C /var/www/html/ \n"
+            - "cd momPopSetup \n"
+            - "./set-app-parameters.sh \n"
+            - "cd ../momPopDb/ \n"
+            - "./set-root-password.sh \n"
+            - "./create-db.sh \n"
+
+  MomPopCafeSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    DependsOn: VPC
+    Properties:
+      GroupDescription: Security group for the MomPopCafe instance
+      VpcId: !Ref VPC
+      Tags:
+        - Key: Name
+          Value: MomPopCafeSecurityGroup
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: "22"
+          ToPort: "22"
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: "80"
+          ToPort: "80"
+          CidrIp: 0.0.0.0/0
+      SecurityGroupEgress:
+        - IpProtocol: "-1"
+          FromPort: "0"
+          ToPort: "65535"
+          CidrIp: 0.0.0.0/0
+
+Outputs:
+  MomPopCafePublicIP:
+    Description: Public IP address of MomPopCafeInstance
+    Value: !GetAtt MomPopCafeInstance.PublicIp
+
+  CafeServerPubDNS:
+    Description: Public DNS address of MomPopCafeInstance
+    Value: !GetAtt MomPopCafeInstance.PublicDnsName
+
+  VpcId:
+    Description: VPC ID
+    Value: !Ref VPC
+
+  PublicSubnet1Id:
+    Description: Public Subnet 1 ID
+    Value: !Ref PublicSubnet1
+
+  MomPopCafeSecurityGroupId:
+    Description: Security Group ID for MomPopCafe
+    Value: !Ref MomPopCafeSecurityGroup

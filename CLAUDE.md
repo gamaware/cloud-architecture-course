@@ -99,9 +99,10 @@ Skills in `.claude/skills/` provide reusable workflows:
 
 - **`/new-lab [NN-topic-name]`** — Scaffolds a new lab module with README template.
   See `docs/lab-template.md` for the 13-section structure.
-- **`/ship [PR-number]`** — End-to-end PR lifecycle: updates docs (CLAUDE.md, README,
+- **`/ship-it [PR-number]`** — End-to-end PR lifecycle: updates docs (CLAUDE.md, README,
   ADRs, MEMORY.md), commits, creates PR, monitors CI, addresses CodeRabbit and Copilot
-  review comments, and merges with `--admin`. Pass a PR number to resume monitoring.
+  review comments, merges with `--admin`, and cleans up stale local branches.
+  Pass a PR number to resume monitoring. Uses global skill.
 
 ## Linting Policy
 

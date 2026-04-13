@@ -37,8 +37,6 @@ notifications.
 
 ## Architecture
 
-![Architecture](screenshots/arch-activity-5.png)
-
 ![Architecture Diagram](screenshots/lambda-architecture.png)
 
 **Data flow:**

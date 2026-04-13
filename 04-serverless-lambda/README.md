@@ -333,7 +333,7 @@ def lambda_handler(event, context):
 >         cur.execute(...)  # reuses the existing connection
 > ```
 
-#### Step 3.5: Configure VPC Connectivity
+#### Step 3.6: Configure VPC Connectivity
 
 The function must run inside the VPC to reach the MariaDB database on its private IP.
 
@@ -346,7 +346,7 @@ The function must run inside the VPC to reach the MariaDB database on its privat
 
 ![Lambda VPC Detail](screenshots/lambda-vpc-detail.png)
 
-#### Step 3.6: Increase the Timeout
+#### Step 3.7: Increase the Timeout
 
 The default Lambda timeout is 3 seconds, which is too short for a database query on a cold
 start.
@@ -632,13 +632,13 @@ def lambda_handler(event, context):
    - **Value**: paste the SNS topic ARN from Task 5
 3. Click **Save**
 
-#### Step 6.5: Increase the Timeout
+#### Step 6.6: Increase the Timeout
 
 1. **Configuration** > **General configuration** > **Edit**
 2. Set **Timeout** to **30 seconds**
 3. Click **Save**
 
-#### Step 6.6: Test the Function
+#### Step 6.7: Test the Function
 
 1. Click the **Test** tab
 2. Create a new test event named `SARTestEvent` with the default `{}` payload
@@ -652,7 +652,11 @@ def lambda_handler(event, context):
 }
 ```
 
-#### Step 6.7: Verify the Email
+> **Note:** The function returns "Sale Analysis Report" (without the "s") in the response
+> body. This is a minor typo in the original function code. The email subject line correctly
+> reads "Daily Sales Analysis Report".
+
+#### Step 6.8: Verify the Email
 
 Check your email inbox. You should receive a **Daily Sales Analysis Report** from
 **SARTopic** containing a summary of the café orders.

@@ -106,3 +106,6 @@ credentials.json
 
 # Python virtual env
 .venv/
+
+# Playwright MCP
+.playwright-mcp/

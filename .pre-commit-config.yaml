@@ -66,12 +66,18 @@ repos:
     hooks:
       - id: actionlint
 
+  # Pinned to the same version CI installs (ZIZMOR_VERSION in quality-checks.yml)
+  # so local and CI findings match regardless of the zizmor on PATH.
   - repo: local
     hooks:
       - id: zizmor
         name: zizmor
-        entry: zizmor --config zizmor.yml .github/workflows/
-        language: system
+        # Local hook with a pinned dependency: pre-commit autoupdate cannot
+        # bump it past the version CI installs (ZIZMOR_VERSION).
+        entry: zizmor
+        language: python
+        additional_dependencies: ["zizmor==1.23.1"]
+        args: ["--config", "zizmor.yml", ".github/workflows/"]
         files: ^\.github/workflows/.*\.ya?ml$
         pass_filenames: false
 

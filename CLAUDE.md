@@ -156,6 +156,13 @@ Weekly auto-update of pre-commit hook versions via PR.
 
 Monitors GitHub Actions dependencies weekly.
 
+### auto-merge-bot-prs.yml
+
+Hourly scheduled job that squash-merges Dependabot and pre-commit update PRs with
+admin bypass once every check on the PR is green and none is pending. Uses the
+`PRE_COMMIT_PAT` secret because GitHub refuses self-approval, so a review-based
+auto-merge cannot satisfy the CODEOWNERS rule for PRs authored with the owner's PAT.
+
 ## Code Review
 
 - **CodeRabbit** — Auto-reviews via `.coderabbit.yaml`. Detailed suggestions with path-specific instructions.
@@ -169,6 +176,10 @@ Monitors GitHub Actions dependencies weekly.
 - All `actions/checkout` steps must include `persist-credentials: false`.
 - Action references use tag pins (e.g., `@v6`); configured via `zizmor.yml` with `ref-pin` policy.
 - zizmor runs in CI and as a pre-commit hook to catch security issues in workflows.
+- zizmor is pinned to 1.23.1 in CI and pre-commit because newer releases require GitHub's `$/`
+  self-repository syntax for in-repo actions, which actionlint does not parse yet. Migrate the
+  `./.github/actions/` references to `$/` and bump zizmor once actionlint supports it
+  (rhysd/actionlint#732).
 
 ## Security
 
@@ -199,7 +210,7 @@ structure persists across semesters. Reference `docs/adr/README.md` for the full
 - **Topics**: cloud-architecture, aws, terraform, cloudformation, python, boto3, vpc,
   iac, labs, cloud-computing
 - **Merge strategy**: Squash only, PR title used as commit title
-- **Auto merge**: Enabled (useful for Dependabot PRs)
+- **Auto merge**: Enabled (bot PRs are merged by the scheduled `auto-merge-bot-prs.yml` job)
 - **Delete branch on merge**: Enabled
 - **Wiki**: Disabled (content lives in repo)
 - **Projects**: Disabled (not in use)

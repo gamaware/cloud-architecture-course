@@ -136,13 +136,18 @@ jobs:
 
       - name: Install zizmor
         run: |
-          tmpdir="$(mktemp -d)"
-          curl -fsL https://github.com/woodruffw/zizmor/releases/latest/download/zizmor-x86_64-unknown-linux-gnu.tar.gz \
-            | tar xz -C "$tmpdir"
-          sudo mv "$tmpdir/zizmor" /usr/local/bin/zizmor
+          ZIZMOR_VERSION="1.23.1"
+          ZIZMOR_BASE="https://github.com/woodruffw/zizmor/releases"
+          ZIZMOR_TAR="zizmor-x86_64-unknown-linux-gnu.tar.gz"
+          curl -sL "${ZIZMOR_BASE}/download/v${ZIZMOR_VERSION}/${ZIZMOR_TAR}" \
+            -o /tmp/zizmor.tar.gz
+          mkdir -p /tmp/zizmor-extract
+          tar -xzf /tmp/zizmor.tar.gz -C /tmp/zizmor-extract
+          find /tmp/zizmor-extract -name zizmor -type f -exec sudo mv {} /usr/local/bin/zizmor \;
+          chmod +x /usr/local/bin/zizmor
 
       - name: Run zizmor
-        run: zizmor .github/workflows/
+        run: zizmor --config zizmor.yml .github/workflows/
 
   prose-lint:
     name: Prose Linting (Vale)

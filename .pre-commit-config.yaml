@@ -66,14 +66,14 @@ repos:
     hooks:
       - id: actionlint
 
-  - repo: local
+  # Pinned to the same version CI installs (ZIZMOR_VERSION in quality-checks.yml)
+  # so local and CI findings match regardless of the zizmor on PATH.
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.23.1
     hooks:
       - id: zizmor
-        name: zizmor
-        entry: zizmor --config zizmor.yml .github/workflows/
-        language: system
+        args: ["--config", "zizmor.yml"]
         files: ^\.github/workflows/.*\.ya?ml$
-        pass_filenames: false
 
   - repo: https://github.com/compilerla/conventional-pre-commit
     rev: v4.4.0

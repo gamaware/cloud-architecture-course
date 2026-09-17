@@ -169,6 +169,10 @@ Monitors GitHub Actions dependencies weekly.
 - All `actions/checkout` steps must include `persist-credentials: false`.
 - Action references use tag pins (e.g., `@v6`); configured via `zizmor.yml` with `ref-pin` policy.
 - zizmor runs in CI and as a pre-commit hook to catch security issues in workflows.
+- zizmor is pinned to 1.23.1 in CI and pre-commit because newer releases require GitHub's `$/`
+  self-repository syntax for in-repo actions, which actionlint does not parse yet. Migrate the
+  `./.github/actions/` references to `$/` and bump zizmor once actionlint supports it
+  (rhysd/actionlint#732).
 
 ## Security
 

@@ -36,9 +36,9 @@ jobs:
     name: Merge green bot PRs
     runs-on: ubuntu-latest
     timeout-minutes: 15
-    # This repo's zizmor policy (secrets-outside-env) requires secrets to be
-    # read inside a job environment. "automation" carries no protection rules
-    # and GitHub creates it on first use.
+    # zizmor's secrets-outside-env audit requires secrets to be read inside a
+    # job environment. "automation" carries no protection rules and GitHub
+    # creates it on first use.
     environment: automation
     steps:
       - name: Merge eligible PRs
